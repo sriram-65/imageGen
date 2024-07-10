@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Image Generator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        input[type="text"] {
+            width: calc(100% - 2rem);
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            margin-top: 1rem;
+            max-width: 100%;
+            border-radius: 10px;
+            display: none;
+        }
+        .spinner {
+            margin-top: 1rem;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 550px) {
+            .container {
+                padding: 1rem;
+            }
+            img {
+                max-width: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Generative AI Image Generator</h2>
+        <input type="text" placeholder="Write your imagination..." />
+        <button>Generate Image</button>
+        <div class="spinner" id="spinner"></div>
+        <img id="img" src="" alt="Generated Image">
+    </div>
+
+    <script>
+        const token = "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"
+        const input = document.querySelector("input")
+        const button = document.querySelector("button")
+        const img = document.getElementById("img")
+        const spinner = document.getElementById("spinner")
+
+        async function query(data) {
+            const response = await fetch(
+                "https://api-inference.huggingface.co/models/ZB-Tech/Text-to-Image",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                    body: JSON.stringify({"inputs": input.value}),
+                }
+            );
+            const result = await response.blob();
+            return result;
+        }
+
+        button.addEventListener("click", async function() {
+            spinner.style.display = 'block'; // Show the spinner
+            img.style.display = 'none'; // Hide the image while loading
+            query().then((response) => {
+                const ImageURL = URL.createObjectURL(response)
+                img.src = ImageURL
+                img.style.display = 'block'; // Show the image after it is generated
+                spinner.style.display = 'none'; // Hide the spinner
+            });
+        });
+    </script>
+</body>
+</html>
