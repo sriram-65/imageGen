@@ -165,23 +165,7 @@
         window.location.href = "https://my-ai-livid.vercel.app/"
        }
         button.addEventListener("click", async function() {
-            const userInput = input.value.toLowerCase();
-            if (userInput.includes("sex") || userInput.includes("hot") || userInput.includes("nude") || userInput.includes("myia khalifa") || userInput.includes("sexy") || userInput.includes("eliza") || userInput.includes("nudes") || userInput.includes("fuck") || userInput.includes("fucking") || userInput.includes("sucks") || userInput.includes("naked")) {
-                
-                showerror.style.display = "block";
-               body.style.background = "#C80036"
-                theError.innerHTML = "Our Ai is Not Trained For" + "  " + userInput
-                setTimeout(function(){
-                 showerror.style.display="none";
-                body.style.background = "#fff"
-                theError.innerHTML = ""      
-                window.location.reload()
-                
-                },8000)
-
-            
-                return;
-            }
+        
             spinner.style.display = 'block';
             img.style.display = 'none';
             query().then((response) => {
