@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -95,27 +94,9 @@
             display: none;
         }
 
-        #error .image-err img {
-            border-radius: 10px;
-            width: 120px;
-        }
-
         @media (max-width: 700px) {
             .container {
                 padding: 60px;
-            }
-
-            .wave {
-                margin-top: 80px;
-            }
-
-            img {
-                width: 100%;
-            }
-
-            #error {
-                padding: 20px 20px;
-                width: 340px;
             }
         }
     </style>
@@ -123,7 +104,7 @@
 
 <body>
     <div class="container">
-        <h2>Generative AI Image Generator(2.0)</h2>
+        <h2>Generative AI Image Generator (2.0)</h2>
         <div class="input-group">
             <input type="text" placeholder="Write your imagination..." />
         </div>
@@ -136,53 +117,38 @@
         <img id="img" class="img-fluid">
     </div>
 
-    <div id="showerror">
-        <div id="error">
-            <div>
-                <h3>You are Using Our AI in Wrong Way</h3>
-                <p>This will Be Reporetd And Blocked By Google & Cyber Security</p>
-                <p id="theError"> </p>
-                <h4>.. For any Contact Please Mail To Sriram ..</h4>
-            </div>
-
-            <div class="image-err">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpKnMIk0pfkJbLxvnEpzcOOhGzw2qm1jejUrGwNwoJMPJAlc7OswmHgxJiaoflVAtJuis&usqp=CAU"
-                    alt="Err-image" id="mg">
-            </div>
-        </div>
-    </div>
-
     <div class="wave">
         <i>&copy; Developed and Hosted By Sriram and Cyril</i>
-        <i> Latest Update is For Hd Images And Fast Generatings</i>
     </div>
+
     <script>
         const token = "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";
         const input = document.querySelector("input");
         const button = document.querySelector("button");
         const img = document.getElementById("img");
         const spinner = document.getElementById("spinner");
-        const showerror = document.getElementById("error")
-        const theError = document.getElementById("theError")
-        const mg = document.getElementById("mg")
-        const body = document.querySelector("body")
-        const btntwo = document.getElementById("btntwo")
+        const btntwo = document.getElementById("btntwo");
 
-        // Request Notification permission
-        function requestNotificationPermission() {
-            if (Notification.permission === "granted") {
-                return true;
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    return permission === "granted";
+        // Register Service Worker for Notifications
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker registered:', registration);
+                })
+                .catch((error) => {
+                    console.error('Service Worker registration failed:', error);
                 });
-            }
         }
 
-        // Function to show a notification
+        // Show Notification using Service Worker
         function showNotification(title, body) {
-            if (Notification.permission === "granted") {
-                new Notification(title, { body });
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(function (registration) {
+                    registration.showNotification(title, {
+                        body: body,
+                        icon: 'https://calibermind.com/wp-content/uploads/2023/09/Generative-AI-circle_Parent-2.svg'
+                    });
+                });
             }
         }
 
@@ -203,11 +169,15 @@
         }
 
         btntwo.onclick = function () {
-            window.location.href = "https://my-ai-livid.vercel.app/"
-        }
+            window.location.href = "https://my-ai-livid.vercel.app/";
+        };
 
         button.addEventListener("click", async function () {
-            // Show notification for image generation started
+            if (!input.value.trim()) {
+                alert("Please enter your imagination text!");
+                return;
+            }
+
             showNotification("Image Generation Started", "Your AI image is being generated...");
 
             spinner.style.display = 'block';
@@ -219,14 +189,11 @@
                 img.style.display = 'block';
                 spinner.style.display = 'none';
 
-                // Show notification for image generation completed
                 showNotification("Image Ready!", "Your AI-generated image is ready to view.");
+            }).catch((error) => {
+                console.error("Error:", error);
             });
         });
-
-        // Call this function when the page loads
-        requestNotificationPermission();
     </script>
 </body>
-
-    </html>
+</html>
